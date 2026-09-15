@@ -18,39 +18,43 @@ import lombok.Data;
 @Data
 @Entity
 @Table(
-    name = "budgets",
+    name = "budget_categories",
     uniqueConstraints = {
         @UniqueConstraint(
-            name = "uk_budget_user_month_year",
-            columnNames = {"user_id", "month", "year"}
+            name = "uk_budget_category",
+            columnNames = {"budget_id", "category_id"}
         )
     }
 )
-public class Budget {
+public class BudgetCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "budget_id")
-    private Long budgetId;
+    @Column(name = "budget_category_id")
+    private Long budgetCategoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "budget_id", nullable = false)
+    private Budget budget;
 
-    @Column(name = "total_budget", precision = 15, scale = 2, nullable = false)
-    private BigDecimal totalBudget;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
-    @Column(name = "saving_amount", precision = 15, scale = 2, nullable = false)
-    private BigDecimal savingAmount = BigDecimal.ZERO;
+    @Column(
+        name = "allocated_amount",
+        precision = 15,
+        scale = 2,
+        nullable = false
+    )
+    private BigDecimal allocatedAmount = BigDecimal.ZERO;
 
-    @Column(name = "rollover_amount", precision = 15, scale = 2, nullable = false)
-    private BigDecimal rolloverAmount = BigDecimal.ZERO;
-
-    @Column(name = "month", nullable = false)
-    private Integer month;
-
-    @Column(name = "year", nullable = false)
-    private Integer year;
+    @Column(
+        name = "allocation_percentage",
+        precision = 5,
+        scale = 2
+    )
+    private BigDecimal allocationPercentage;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -58,7 +62,7 @@ public class Budget {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public Budget() {
+    public BudgetCategory() {
     }
 
 }
