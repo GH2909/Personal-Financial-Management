@@ -1,5 +1,6 @@
 package Personal.Finance.Manager.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,5 +19,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByUserAndCategory_CategoryId(
             User user,
             Long categoryId
+    );
+
+    boolean existsByUserAndCategory_CategoryIdAndCreatedAtBetween(
+            User user,
+            Long categoryId,
+            LocalDateTime start,
+            LocalDateTime end
     );
 }
