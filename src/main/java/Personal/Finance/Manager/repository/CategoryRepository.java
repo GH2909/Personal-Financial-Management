@@ -8,12 +8,16 @@ import Personal.Finance.Manager.model.Category;
 import Personal.Finance.Manager.model.CategoryType;
 import Personal.Finance.Manager.model.User;
 
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository
+        extends JpaRepository<Category, Long> {
 
     List<Category> findByUser(User user);
 
     List<Category> findByUserAndType(
             User user,
-            CategoryType type
-    );
+            CategoryType type);
+
+    boolean existsByUserAndCategoryName(
+            User user,
+            String categoryName);
 }

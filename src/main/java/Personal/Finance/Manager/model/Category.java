@@ -23,6 +23,9 @@ public class Category {
     @Column(name = "category_id")
     private Long categoryId;
 
+    @Column(name = "icon", length = 50)
+    private String icon;
+
     @Column(name = "category_name", length = 100, nullable = false)
     private String categoryName;
 
