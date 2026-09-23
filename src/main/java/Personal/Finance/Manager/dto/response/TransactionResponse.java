@@ -13,6 +13,8 @@ public class TransactionResponse {
 
     private Long transactionId;
 
+    private String transactionName;
+
     private Long categoryId;
 
     private String categoryName;

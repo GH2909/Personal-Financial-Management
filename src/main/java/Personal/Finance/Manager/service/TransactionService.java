@@ -23,6 +23,10 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
 
+    // =========================================================
+    // CREATE TRANSACTION
+    // =========================================================
+
     @Transactional
     public TransactionResponse createTransaction(
             TransactionRequest request,
@@ -41,54 +45,60 @@ public class TransactionService {
 
         // 3. Check Category belongs to User
         if (category.getUser() == null ||
-                !category.getUser().getUserId().equals(user.getUserId())) {
+                !category.getUser().getUserId()
+                        .equals(user.getUserId())) {
 
             throw new RuntimeException(
                     "You do not have permission to use this category");
         }
 
-        // 4. Category.type is the source of transaction type
-        // No need to set type into Transaction if Transaction
-        // does not have a type field.
-
-        // 5. Create Transaction
+        // 4. Create Transaction
         Transaction transaction = new Transaction();
 
         transaction.setUser(user);
         transaction.setCategory(category);
-        transaction.setSpendingMoney(request.getSpendingMoney());
-        transaction.setDescription(request.getDescription());
-        transaction.setCreatedAt(LocalDateTime.now());
+        transaction.setTransactionName(
+                request.getTransactionName());
+        transaction.setSpendingMoney(
+                request.getSpendingMoney());
+        transaction.setDescription(
+                request.getDescription());
+        transaction.setCreatedAt(
+                LocalDateTime.now());
 
-        // 6. Save
+        // 5. Save
         Transaction savedTransaction =
                 transactionRepository.save(transaction);
 
-        // 7. Return response
+        // 6. Return response
         return mapToResponse(savedTransaction);
     }
 
-    /**
-     * GET ALL TRANSACTIONS OF CURRENT USER
-     */
+    // =========================================================
+    // GET ALL TRANSACTIONS OF CURRENT USER
+    // =========================================================
+
     @Transactional(readOnly = true)
-    public List<TransactionResponse> getAllTransactions(User user) {
+    public List<TransactionResponse> getAllTransactions(
+            User user) {
 
         if (user == null) {
             throw new RuntimeException("User is required");
         }
 
         List<Transaction> transactions =
-                transactionRepository.findByUserOrderByCreatedAtDesc(user);
+                transactionRepository
+                        .findByUserOrderByCreatedAtDesc(user);
 
         return transactions.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * GET TRANSACTION BY ID
-     */
+    // =========================================================
+    // GET TRANSACTION BY ID
+    // =========================================================
+
     @Transactional(readOnly = true)
     public TransactionResponse getTransactionById(
             Long transactionId,
@@ -110,9 +120,10 @@ public class TransactionService {
         return mapToResponse(transaction);
     }
 
-    /**
-     * UPDATE TRANSACTION
-     */
+    // =========================================================
+    // UPDATE TRANSACTION
+    // =========================================================
+
     @Transactional
     public TransactionResponse updateTransaction(
             Long transactionId,
@@ -135,23 +146,32 @@ public class TransactionService {
 
         // 3. Find new category
         Category category =
-                categoryRepository.findById(request.getCategoryId())
+                categoryRepository.findById(
+                        request.getCategoryId())
                         .orElseThrow(() ->
                                 new RuntimeException(
                                         "Category not found"));
 
         // 4. Check category belongs to current user
         if (category.getUser() == null ||
-                !category.getUser().getUserId().equals(user.getUserId())) {
+                !category.getUser().getUserId()
+                        .equals(user.getUserId())) {
 
             throw new RuntimeException(
                     "You do not have permission to use this category");
         }
 
         // 5. Update transaction
+        transaction.setTransactionName(
+                request.getTransactionName());
+
         transaction.setCategory(category);
-        transaction.setSpendingMoney(request.getSpendingMoney());
-        transaction.setDescription(request.getDescription());
+
+        transaction.setSpendingMoney(
+                request.getSpendingMoney());
+
+        transaction.setDescription(
+                request.getDescription());
 
         // Do not change createdAt
 
@@ -163,9 +183,10 @@ public class TransactionService {
         return mapToResponse(updatedTransaction);
     }
 
-    /**
-     * DELETE TRANSACTION
-     */
+    // =========================================================
+    // DELETE TRANSACTION
+    // =========================================================
+
     @Transactional
     public void deleteTransaction(
             Long transactionId,
@@ -189,24 +210,27 @@ public class TransactionService {
         transactionRepository.delete(transaction);
     }
 
-    /**
-     * CHECK TRANSACTION OWNERSHIP
-     */
+    // =========================================================
+    // CHECK TRANSACTION OWNERSHIP
+    // =========================================================
+
     private void validateOwnership(
             Transaction transaction,
             User user) {
 
         if (transaction.getUser() == null ||
-                !transaction.getUser().getUserId().equals(user.getUserId())) {
+                !transaction.getUser().getUserId()
+                        .equals(user.getUserId())) {
 
             throw new RuntimeException(
                     "You do not have permission to access this transaction");
         }
     }
 
-    /**
-     * MAP ENTITY -> RESPONSE
-     */
+    // =========================================================
+    // MAP ENTITY -> RESPONSE
+    // =========================================================
+
     private TransactionResponse mapToResponse(
             Transaction transaction) {
 
@@ -216,12 +240,16 @@ public class TransactionService {
         response.setTransactionId(
                 transaction.getTransactionId());
 
+        response.setTransactionName(
+                transaction.getTransactionName());
+
         response.setCategoryId(
                 transaction.getCategory().getCategoryId());
 
         response.setCategoryName(
                 transaction.getCategory().getCategoryName());
 
+        // Type is taken from Category
         response.setType(
                 transaction.getCategory().getType());
 
