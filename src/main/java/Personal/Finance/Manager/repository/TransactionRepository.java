@@ -1,10 +1,14 @@
 package Personal.Finance.Manager.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import Personal.Finance.Manager.model.CategoryType;
 import Personal.Finance.Manager.model.Transaction;
 import Personal.Finance.Manager.model.User;
 
@@ -26,5 +30,27 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             Long categoryId,
             LocalDateTime start,
             LocalDateTime end
+    );
+
+    /**
+     * Calculate total expense of a user
+     * in a specific date range.
+     *
+     * Category.type is used to determine
+     * whether the transaction is INCOME or EXPENSE.
+     */
+    @Query("""
+        SELECT COALESCE(SUM(t.spendingMoney), 0)
+        FROM Transaction t
+        WHERE t.user = :user
+          AND t.category.type = :type
+          AND t.createdAt >= :start
+          AND t.createdAt < :end
+    """)
+    BigDecimal sumSpendingMoneyByUserAndTypeAndDateRange(
+            @Param("user") User user,
+            @Param("type") CategoryType type,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
     );
 }
