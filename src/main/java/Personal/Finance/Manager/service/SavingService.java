@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import Personal.Finance.Manager.dto.request.SavingDepositRequest;
 import Personal.Finance.Manager.dto.request.SavingGoalRequest;
 import Personal.Finance.Manager.dto.request.SavingWithdrawRequest;
 import Personal.Finance.Manager.dto.response.SavingGoalResponse;
+import Personal.Finance.Manager.dto.response.SavingRecordResponse;
 import Personal.Finance.Manager.model.GoalType;
 import Personal.Finance.Manager.model.SavingGoal;
 import Personal.Finance.Manager.model.SavingMethod;
@@ -400,4 +402,42 @@ public class SavingService {
     
         return mapToResponse(savedGoal);
     }
+
+        //========================
+        // GET ALL SAVING RECORDS
+        // ========================
+        @Transactional(readOnly = true)
+        public List<SavingRecordResponse> getSavingRecords(
+                Long savingGoalId,
+                User user
+        ) {
+            if (user == null) {
+                throw new RuntimeException("User is required");
+            }        
+
+            SavingGoal savingGoal = savingGoalRepository
+                    .findBySavingGoalIdAndUser(savingGoalId, user)
+                    .orElseThrow(() ->
+                            new RuntimeException("Saving goal not found"));        
+
+            return savingRecordRepository
+                    .findBySavingGoalOrderByCreatedAtDesc(savingGoal)
+                    .stream()
+                    .map(this::mapRecordToResponse)
+                    .collect(Collectors.toList());
+        }
+        
+        private SavingRecordResponse mapRecordToResponse(SavingRecord record) {
+
+            SavingRecordResponse response = new SavingRecordResponse();
+
+            response.setSavingRecordId(record.getSavingRecordId());
+            response.setAmount(record.getAmount());
+            response.setType(record.getType());
+            response.setCreatedAt(record.getCreatedAt());
+            response.setDescription(record.getDescription());
+        
+            return response;
+        }
+                            
 }

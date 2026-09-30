@@ -46,5 +46,4 @@ public class SavingRecord {
     public SavingRecord() {
     }
 
-    // getters/setters
 }
