@@ -23,4 +23,8 @@ public interface SavingGoalRepository
             Long savingGoalId,
             User user
     );
+    long countByUserAndStatus(
+            User user,
+            SavingStatus status
+    );
 }

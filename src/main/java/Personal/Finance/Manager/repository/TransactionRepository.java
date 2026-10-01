@@ -53,4 +53,23 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+    @Query("""
+        SELECT t.category.categoryId,
+               t.category.categoryName,
+               COALESCE(SUM(t.spendingMoney), 0)
+        FROM Transaction t
+        WHERE t.user = :user
+          AND t.category.type = :type
+          AND t.createdAt >= :start
+          AND t.createdAt < :end
+        GROUP BY t.category.categoryId, t.category.categoryName
+        ORDER BY SUM(t.spendingMoney) DESC
+    """)
+    List<Object[]> sumByCategory(
+            @Param("user") User user,
+            @Param("type") CategoryType type,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
 }

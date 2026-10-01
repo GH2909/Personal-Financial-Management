@@ -45,6 +45,10 @@ public class SavingService {
 
         savingGoal.setUser(user);
         savingGoal.setName(request.getName());
+        LocalDateTime now = LocalDateTime.now();
+
+        savingGoal.setCreatedAt(now);
+        savingGoal.setUpdatedAt(now);
         savingGoal.setGoalType(request.getGoalType());
         savingGoal.setSavingMethod(request.getSavingMethod());
 
@@ -252,6 +256,10 @@ public class SavingService {
             savingGoal.setSavingValue(
                     request.getSavingValue()
             );
+
+            savingGoal.setUpdatedAt(
+                    LocalDateTime.now());
+
         }
     
         SavingGoal updatedGoal =
@@ -329,6 +337,7 @@ public class SavingService {
                 .add(request.getAmount());
     
         savingGoal.setCurrentAmount(newAmount);
+        savingGoal.setUpdatedAt(LocalDateTime.now());
     
         // 6. TARGET và đạt mục tiêu → COMPLETED
         if (savingGoal.getGoalType() == GoalType.TARGET
@@ -395,6 +404,7 @@ public class SavingService {
                 .subtract(request.getAmount());
     
         savingGoal.setCurrentAmount(newAmount);
+        savingGoal.setUpdatedAt(LocalDateTime.now());
     
         // 6. Save
         SavingGoal savedGoal =
