@@ -10,19 +10,15 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.RequiredArgsConstructor;
-
 import Personal.Finance.Manager.dto.request.BudgetCategoryRequest;
 import Personal.Finance.Manager.dto.request.BudgetRequest;
 import Personal.Finance.Manager.dto.response.BudgetCategoryResponse;
 import Personal.Finance.Manager.dto.response.BudgetResponse;
-
 import Personal.Finance.Manager.model.AllocationMode;
 import Personal.Finance.Manager.model.Budget;
 import Personal.Finance.Manager.model.BudgetCategory;
 import Personal.Finance.Manager.model.Category;
 import Personal.Finance.Manager.model.User;
-
 import Personal.Finance.Manager.repository.BudgetCategoryRepository;
 import Personal.Finance.Manager.repository.BudgetRepository;
 import Personal.Finance.Manager.repository.CategoryRepository;
