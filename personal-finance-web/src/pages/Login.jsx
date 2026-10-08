@@ -1,18 +1,43 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
 
+import { authApi } from "../api/authApi";
+import { saveToken } from "../api/authService";
+
 function Login() {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    function handleSubmit(event) {
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    async function handleSubmit(event) {
         event.preventDefault();
 
-        console.log({
-            email,
-            password,
-        });
+        setError("");
+        setLoading(true);
+
+        try {
+            const response = await authApi.login({
+                email,
+                password,
+            });
+
+            console.log("Login response:", response);
+
+            saveToken(response.token);
+
+            navigate("/dashboard");
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -24,7 +49,9 @@ function Login() {
                 name="email"
                 type="email"
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) =>
+                    setEmail(event.target.value)
+                }
                 placeholder="Nhập email"
                 required
             />
@@ -34,13 +61,24 @@ function Login() {
                 name="password"
                 type="password"
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) =>
+                    setPassword(event.target.value)
+                }
                 placeholder="Nhập mật khẩu"
                 required
             />
 
-            <Button type="submit">
-                Đăng nhập
+            {error && (
+                <p className="form-error">
+                    {error}
+                </p>
+            )}
+
+            <Button
+                type="submit"
+                disabled={loading}
+            >
+                {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </Button>
         </form>
     );
