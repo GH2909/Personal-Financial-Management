@@ -119,13 +119,10 @@ public class UserService {
     // =========================
 
     private UserResponse mapToResponse(User user) {
-
-        UserResponse response = new UserResponse();
-
-        response.setUserId(user.getUserId());
-        response.setFullname(user.getFullname());
-        response.setEmail(user.getEmail());
-
-        return response;
+        return new UserResponse(
+           user.getUserId(),
+           user.getFullname(),
+           user.getEmail()
+       );
     }
 }

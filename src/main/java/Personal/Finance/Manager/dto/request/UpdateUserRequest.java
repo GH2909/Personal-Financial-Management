@@ -2,7 +2,6 @@ package Personal.Finance.Manager.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,12 +9,10 @@ import lombok.Setter;
 @Setter
 public class UpdateUserRequest {
 
-    @NotBlank(message = "Fullname is required")
-    @Size(max = 100, message = "Fullname must not exceed 100 characters")
+    @NotBlank(message = "Full name is required")
     private String fullname;
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    @Size(max = 225, message = "Email must not exceed 225 characters")
+    @Email(message = "Email is invalid")
     private String email;
 }
