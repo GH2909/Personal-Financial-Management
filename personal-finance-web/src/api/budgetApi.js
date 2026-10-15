@@ -27,3 +27,29 @@ export async function deleteBudget(id) {
         method: "DELETE",
     });
 }
+
+export async function addBudgetCategory(budgetId, data) {
+    return apiRequest(`/budgets/${budgetId}/categories`, {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
+}
+
+export async function updateBudgetCategory(budgetId, categoryId, data) {
+    return apiRequest(
+        `/budgets/${budgetId}/categories/${categoryId}`,
+        {
+            method: "PUT",
+            body: JSON.stringify(data),
+        }
+    );
+}
+
+export async function deleteBudgetCategory(budgetId, categoryId) {
+    return apiRequest(
+        `/budgets/${budgetId}/categories/${categoryId}`,
+        {
+            method: "DELETE",
+        }
+    );
+}

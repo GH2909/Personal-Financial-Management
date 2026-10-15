@@ -9,6 +9,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
+import Categories from "./pages/Categories";
+import Budgets from "./pages/Budgets";
 
 import AuthLayout from "./layouts/AuthLayout";
 import MainLayout from "./layouts/MainLayout";
@@ -65,14 +68,29 @@ function App() {
                 />
 
                 <Route
-                    path="*"
+                    path="/transactions"
                     element={
-                        <Navigate
-                            to="/login"
-                            replace
-                        />
+                        <MainLayout>
+                            <Transactions />
+                        </MainLayout>
                     }
                 />
+
+                <Route 
+                    path="/categories" 
+                    element={
+                        <MainLayout>
+                            <Categories />
+                        </MainLayout>
+                    } />
+
+                <Route 
+                    path="/budgets" 
+                    element={
+                        <MainLayout>
+                            <Budgets />
+                        </MainLayout>
+                    } />
 
             </Routes>
         </BrowserRouter>
